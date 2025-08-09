@@ -21,7 +21,7 @@ const navigationLinks = [
   { href: "/about", label: "About" },
 ];
 
-export default function Component() {
+export default function Navbar() {
   return (
     <header className="border-b px-4 md:px-6 container bg-background">
       <div className="flex h-16 items-center justify-between gap-4">
@@ -82,15 +82,16 @@ export default function Component() {
           </Popover>
           {/* Main nav */}
           <div className="flex items-center gap-6">
-            <a href="#" className="text-primary hover:text-primary/90">
+            <Link to={"/"} className="text-primary hover:text-primary/90">
               <Logo></Logo>
-            </a>
+            </Link>
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
                 {navigationLinks.map((link, index) => (
                   <NavigationMenuItem key={index}>
                     <NavigationMenuLink
+                      asChild
                       active={link.active}
                       href={link.href}
                       className="text-muted-foreground hover:text-primary py-1.5 font-medium"
@@ -107,7 +108,7 @@ export default function Component() {
         <div className="flex items-center gap-2">
           <ModeToggle></ModeToggle>
           <Button asChild size="default" className="">
-            <a href="#">Sign In</a>
+            <Link to={"/auth/login"}>Login</Link>
           </Button>
         </div>
       </div>
