@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { toast } from "sonner";
 import {
   Form,
   FormField,
@@ -12,13 +13,37 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 import SocialLoginButtons from "@/components/modules/auth/SocialBtn";
+import PasswordInput from "@/components/ui/passwordInput";
+import { useRegisterMutation } from "@/redux/features/auth/auth.api";
 
-const registerSchema = z.object({
-  fullName: z.string().min(2, "Full name is required"),
-  email: z.email("Invalid email address"),
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
+const registerSchema = z
+  .object({
+    fullName: z
+      .string()
+      .min(2, { message: "Name is too short, Minimum 2 charecters long" })
+      .max(50, { message: "Name is too long, Max 50 charecter long" }),
+
+    email: z.email("Invalid email address"),
+
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long." })
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/, {
+        message:
+          "Password must include uppercase, lowercase, and a special character.",
+      }),
+    comfirmPassword: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long." })
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/, {
+        message:
+          "Password must include uppercase, lowercase, and a special character.",
+      }),
+  })
+  .refine((data) => data.password === data.comfirmPassword, {
+    message: "Password don't match",
+    path: ["comfirmPassword"],
+  });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
@@ -28,13 +53,28 @@ export default function Register() {
     defaultValues: {
       fullName: "",
       email: "",
-      username: "",
       password: "",
+      comfirmPassword: "",
     },
   });
 
-  const onSubmit = (data: RegisterFormValues) => {
-    console.log("Form submitted:", data);
+  const [register] = useRegisterMutation();
+
+  const onSubmit = async (data: RegisterFormValues) => {
+    const userInfo = {
+      name: data.fullName,
+      email: data.email,
+      password: data.password,
+    };
+    console.log(userInfo);
+    try {
+      const result = await register(userInfo);
+      console.log(result);
+      toast.success("User created successfully.");
+    } catch (error) {
+      console.log(error);
+      toast.error("User create unsuccessfull.");
+    }
   };
 
   return (
@@ -76,21 +116,6 @@ export default function Register() {
             )}
           />
 
-          {/* Username */}
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="username123" {...field} />
-                </FormControl>
-                <FormMessage />
-              </>
-            )}
-          />
-
           {/* Password */}
           <FormField
             control={form.control}
@@ -99,7 +124,22 @@ export default function Register() {
               <>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="••••••••" {...field} />
+                  <PasswordInput {...field}></PasswordInput>
+                </FormControl>
+                <FormMessage />
+              </>
+            )}
+          />
+
+          {/* Re Password */}
+          <FormField
+            control={form.control}
+            name="comfirmPassword"
+            render={({ field }) => (
+              <>
+                <FormLabel>Comfirm password</FormLabel>
+                <FormControl>
+                  <PasswordInput {...field}></PasswordInput>
                 </FormControl>
                 <FormMessage />
               </>
@@ -114,17 +154,18 @@ export default function Register() {
           >
             {form.formState.isSubmitting ? "Signing in..." : "Sign in"}
           </Button>
-
-          <SocialLoginButtons></SocialLoginButtons>
-
-          <p className="text-lg text-center">
-            Already have an account?{" "}
-            <Link to="/auth/login" className="text-primary hover:underline">
-              Login
-            </Link>
-          </p>
         </form>
       </Form>
+      <div className="space-y-2 mt-4">
+        <SocialLoginButtons></SocialLoginButtons>
+
+        <p className="text-lg text-center">
+          Already have an account?{" "}
+          <Link to="/auth/login" className="text-primary hover:underline">
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
