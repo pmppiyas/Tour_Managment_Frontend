@@ -1,5 +1,6 @@
 import SocialLoginButtons from "@/components/modules/auth/SocialBtn";
 import { z } from "zod";
+import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -33,6 +34,7 @@ export default function Login() {
   });
 
   const [login] = useLoginMutation();
+  const navigate = useNavigate();
 
   const onSubmit = async (data: TLoginValues) => {
     const userInfo = {
@@ -41,8 +43,30 @@ export default function Login() {
     };
     try {
       const result = await login(userInfo);
-      console.log(result);
+      if (
+        result.error &&
+        typeof result.error === "object" &&
+        "status" in result.error
+      ) {
+        if (result.error.status === 404) {
+          form.setError("password", {
+            type: "manual",
+            message: "Incorrect Password !!!",
+          });
+          toast.error("Incorrect password !!!");
+          return;
+        } else if (result.error.status === 420) {
+          form.setError("email", {
+            type: "manual",
+            message: "User does not exist.",
+          });
+          toast.error("User does not exist.");
+          return;
+        }
+      }
+
       toast.success("Login successfull.");
+      navigate("/");
     } catch (error) {
       console.log(error);
       toast.error("Login failed.");
@@ -67,6 +91,7 @@ export default function Login() {
                     {...field}
                   />
                 </FormControl>
+
                 <FormMessage />
               </>
             )}

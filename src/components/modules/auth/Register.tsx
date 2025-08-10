@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+
 import {
   Form,
   FormField,
@@ -12,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import SocialLoginButtons from "@/components/modules/auth/SocialBtn";
 import PasswordInput from "@/components/ui/passwordInput";
 import { useRegisterMutation } from "@/redux/features/auth/auth.api";
@@ -59,6 +61,7 @@ export default function Register() {
   });
 
   const [register] = useRegisterMutation();
+  const navigate = useNavigate();
 
   const onSubmit = async (data: RegisterFormValues) => {
     const userInfo = {
@@ -71,6 +74,7 @@ export default function Register() {
       const result = await register(userInfo);
       console.log(result);
       toast.success("User created successfully.");
+      navigate("/auth/verify");
     } catch (error) {
       console.log(error);
       toast.error("User create unsuccessfull.");

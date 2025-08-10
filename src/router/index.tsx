@@ -1,5 +1,6 @@
 import Login from "@/components/modules/auth/Login";
 import Register from "@/components/modules/auth/Register";
+import Verify from "@/components/modules/auth/verify";
 import ErrorPage from "@/layouts/ErrorPage";
 import MainLayout from "@/layouts/MainLayout";
 import NotFound from "@/layouts/NotFound";
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
       {
         path: "/auth/login",
         Component: Login,
+      },
+      {
+        path: "/auth/verify",
+        Component: Verify,
       },
     ],
   },
