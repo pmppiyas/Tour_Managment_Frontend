@@ -74,7 +74,9 @@ export default function Register() {
       const result = await register(userInfo);
       console.log(result);
       toast.success("User created successfully.");
-      navigate("/auth/verify");
+      navigate("/auth/verify", {
+        state: data.email,
+      });
     } catch (error) {
       console.log(error);
       toast.error("User create unsuccessfull.");
