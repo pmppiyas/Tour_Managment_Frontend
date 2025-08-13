@@ -13,25 +13,28 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useVerifyOtpMutation } from "@/redux/features/auth/auth.api";
+import {
+  useSendOtpMutation,
+  useVerifyOtpMutation,
+} from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
+import type { IError } from "@/types";
 
 export default function Verify() {
+  const [isResendDisabled, setIsResendDisabled] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
   const location = useLocation();
   const navigate = useNavigate();
   const [verifyOtp] = useVerifyOtpMutation(undefined);
+  const [sendOtp] = useSendOtpMutation(undefined);
   const [email] = useState(location.state);
-
-  // useEffect(() => {
-  //   if (!email) {
-  //     navigate("/");
-  //   }
-  // });
 
   const otpSchema = z.object({
     otp: z.string().min(6, {
@@ -50,26 +53,68 @@ export default function Verify() {
 
   const onSubmit = async ({ otp }: TOTP) => {
     try {
-      const payload = {
-        otp,
-        email,
-      };
-
+      const payload = { otp, email };
       const result = await verifyOtp(payload).unwrap();
 
       if (result.success) {
         navigate("/auth/login");
-        toast.success("Verification successfull.");
+        toast.success("Verification successful.");
       }
-    } catch (err) {
-      console.log(err);
+    } catch (err: unknown) {
+      const error = err as IError;
+
+      if (error?.status === 417) {
+        form.setError("otp", {
+          type: "manual",
+          message: "OTP has expired.",
+        });
+        toast.error("OTP has expired.");
+      } else if (error?.status === 400) {
+        form.setError("otp", {
+          type: "manual",
+          message: "Invalid OTP",
+        });
+      } else {
+        toast.error("Verification failed.");
+      }
     }
   };
 
-  const handleResendOtp = async () => {};
+  const handleResendOtp = async () => {
+    try {
+      await sendOtp({ email }).unwrap();
+      toast.success("OTP resent successfully.");
+      setIsResendDisabled(true);
+      setResendTimer(120);
+
+      if (intervalRef.current) clearInterval(intervalRef.current);
+
+      intervalRef.current = setInterval(() => {
+        setResendTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(intervalRef.current!);
+            intervalRef.current = null;
+            setIsResendDisabled(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch (err) {
+      toast.error("Failed to resend OTP.");
+      console.error("Resend OTP error:", err);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
   return (
-    <div className="w-full mx-auto max-w-md bg-background/80 border  rounded-xl shadow-lg my-8 px-2 py-4 md:p-6 space-y-6">
-      <h2 className="text-2xl font-semibold text-center ">
+    <div className="w-full mx-auto max-w-md bg-background/80 border rounded-xl shadow-lg my-8 px-2 py-4 md:p-6 space-y-6">
+      <h2 className="text-2xl font-semibold text-center">
         🔐 OTP Verification
       </h2>
 
@@ -94,7 +139,7 @@ export default function Verify() {
                         <InputOTPSlot
                           key={index}
                           index={index}
-                          className="w-12 h-12 text-xl text-center border  rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition"
+                          className="w-12 h-12 text-xl text-center border rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition"
                         />
                       ))}
                     </InputOTPGroup>
@@ -121,10 +166,15 @@ export default function Verify() {
         Didn't receive the code?{" "}
         <button
           type="button"
-          className="text-primary hover:underline font-medium"
+          className={`text-primary font-medium ${
+            isResendDisabled
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:underline"
+          }`}
           onClick={handleResendOtp}
+          disabled={isResendDisabled}
         >
-          Resend OTP
+          {isResendDisabled ? `Resend in ${resendTimer}s` : "Resend OTP"}
         </button>
       </p>
     </div>

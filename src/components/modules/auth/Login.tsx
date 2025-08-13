@@ -20,6 +20,7 @@ import {
   useSendOtpMutation,
 } from "@/redux/features/auth/auth.api";
 import PasswordInput from "@/components/ui/passwordInput";
+import type { IError } from "@/types";
 
 const LoginSchema = z.object({
   email: z.email("Input a valid email."),
@@ -48,51 +49,52 @@ export default function Login() {
       password: data.password,
     };
     try {
-      const result = await login(userInfo);
-
-      if (
-        result.error &&
-        typeof result.error === "object" &&
-        "status" in result.error
-      ) {
-        if (result.error.status === 404) {
-          form.setError("password", {
-            type: "manual",
-            message: "Incorrect Password !!!",
-          });
-          toast.error("Incorrect password !!!");
-          return;
-        } else if (result.error.status === 420) {
-          form.setError("email", {
-            type: "manual",
-            message: "User does not exist.",
-          });
-          toast.error("User does not exist.");
-          return;
-        } else if (result.error.status === 406) {
-          setIsVerified(false);
-          form.setError("email", {
-            type: "manual",
-            message: "User is not verified.",
-          });
-          toast.error("User is not verified.");
-          return;
-        }
-      }
+      await login(userInfo).unwrap();
 
       toast.success("Login successfull.");
       navigate("/");
-    } catch (error) {
+    } catch (err) {
+      const error = err as IError;
+
+      if (error.status === 404) {
+        form.setError("password", {
+          type: "manual",
+          message: "Incorrect Password !!!",
+        });
+        toast.error("Incorrect password !!!");
+        return;
+      } else if (error.status === 420) {
+        form.setError("email", {
+          type: "manual",
+          message: "User does not exist.",
+        });
+        toast.error("User does not exist.");
+        return;
+      } else if (error.status === 406) {
+        setIsVerified(false);
+        form.setError("email", {
+          type: "manual",
+          message: "User is not verified.",
+        });
+        toast.error("User is not verified.");
+        return;
+      }
+
       console.log(error);
       toast.error("Login failed.");
     }
   };
 
   const verifyClick = async (email: string) => {
-    sendOtp({ email });
-    navigate("/auth/verify", {
-      state: email,
-    });
+    try {
+      sendOtp({ email });
+      navigate("/auth/verify", {
+        state: email,
+      });
+      toast.success("Verify otp send successfully.");
+    } catch (err: unknown) {
+      toast.error("Verify otp send unsuccessfully.");
+    }
   };
 
   return (

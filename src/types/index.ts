@@ -6,3 +6,15 @@ export interface IResponse<T> {
   message: string;
   data: T;
 }
+
+export interface IError {
+  status: number;
+  data: {
+    message?: string;
+    error?: {
+      statusCode?: number;
+    };
+    success?: boolean;
+    stack?: string;
+  };
+}
