@@ -1,6 +1,13 @@
+import { useNavigate } from "react-router";
+
 function Logo() {
+  const navigate = useNavigate();
+  const clickLogo = () => {
+    navigate("/");
+  };
   return (
     <svg
+      onClick={() => clickLogo()}
       id="logo-35"
       width="50"
       height="39"

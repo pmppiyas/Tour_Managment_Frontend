@@ -6,9 +6,9 @@ import ErrorPage from "@/page/shared/ErrorPage";
 import MainLayout from "@/layouts/MainLayout";
 import NotFound from "@/page/shared/NotFound";
 import { createBrowserRouter } from "react-router";
-import Analytics from "@/page/admin/Analytics";
 import Bookings from "@/page/user/Bookings";
-import Add_Tour from "@/page/admin/Add_Tour";
+import { generateRoutes } from "@/utils/generateRoutes";
+import { adminSidebarItems } from "@/router/adminSidebarNav";
 
 export const router = createBrowserRouter([
   {
@@ -29,30 +29,21 @@ export const router = createBrowserRouter([
         path: "/auth/verify",
         Component: Verify,
       },
-      {
-        path: "/admin",
-        Component: DashboardLayout,
-        children: [
-          {
-            path: "analytices",
-            element: <Analytics />,
-          },
-          {
-            path: "add_tour",
-            element: <Add_Tour />,
-          },
-        ],
-      },
+    ],
+  },
+  {
+    path: "/admin",
+    Component: DashboardLayout,
+    children: [...generateRoutes(adminSidebarItems)],
+  },
 
+  {
+    path: "/user",
+    Component: DashboardLayout,
+    children: [
       {
-        path: "/user",
-        Component: DashboardLayout,
-        children: [
-          {
-            path: "bookings",
-            element: <Bookings />,
-          },
-        ],
+        path: "bookings",
+        element: <Bookings />,
       },
     ],
   },
