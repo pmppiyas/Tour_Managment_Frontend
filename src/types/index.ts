@@ -29,3 +29,5 @@ export interface ISidebarItem {
     icon: ComponentType;
   }[];
 }
+
+export type TRole = "SUPER_ADMIN" | "ADMIN" | "USER" | "GUIDE";

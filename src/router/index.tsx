@@ -6,9 +6,9 @@ import ErrorPage from "@/page/shared/ErrorPage";
 import MainLayout from "@/layouts/MainLayout";
 import NotFound from "@/page/shared/NotFound";
 import { createBrowserRouter } from "react-router";
-import Bookings from "@/page/user/Bookings";
 import { generateRoutes } from "@/utils/generateRoutes";
 import { adminSidebarItems } from "@/router/adminSidebarNav";
+import { userSidebarItems } from "@/router/userSidebarNav";
 
 export const router = createBrowserRouter([
   {
@@ -40,11 +40,6 @@ export const router = createBrowserRouter([
   {
     path: "/user",
     Component: DashboardLayout,
-    children: [
-      {
-        path: "bookings",
-        element: <Bookings />,
-      },
-    ],
+    children: [...generateRoutes(userSidebarItems)],
   },
 ]);

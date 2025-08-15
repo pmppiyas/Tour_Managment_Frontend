@@ -10,7 +10,7 @@ export const adminSidebarItems: ISidebarItem[] = [
     items: [
       {
         title: "Analytics",
-        url: "/admin/analytics",
+        url: "analytics",
         component: Analytics,
         icon: IconDashboard,
       },
@@ -21,13 +21,13 @@ export const adminSidebarItems: ISidebarItem[] = [
     items: [
       {
         title: "All Tour",
-        url: "/admin/all_tour",
+        url: "all_tour",
         component: All_Tour,
         icon: IconTexture,
       },
       {
         title: "Add A Tour",
-        url: "/admin/add_tour",
+        url: "add_tour",
         component: Add_Tour,
         icon: IconCopyPlus,
       },

@@ -11,13 +11,17 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { adminSidebarItems } from "@/router/adminSidebarNav";
-
-const data = {
-  navMain: adminSidebarItems,
-};
+import { getSidebarItems } from "@/utils/getSidebarItems";
+import { useGetMeQuery } from "@/redux/features/auth/auth.api";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: me } = useGetMeQuery(undefined);
+  const role = me?.data?.role ? me?.data?.role : "USER";
+
+  const data = {
+    navMain: getSidebarItems(role),
+  };
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader></SidebarHeader>
