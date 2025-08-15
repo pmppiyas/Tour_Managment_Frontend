@@ -1,5 +1,6 @@
 import Logo from "@/assets/icons/logo";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -13,6 +14,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ModeToggle } from "@/components/ui/themeToggle";
+import {
+  authApi,
+  useGetMeQuery,
+  useLogOutMutation,
+} from "@/redux/features/auth/auth.api";
+import { toast } from "sonner";
+import { useAppDispatch } from "@/redux/hooks";
 
 const navigationLinks = [
   { href: "/", label: "Home", active: true },
@@ -22,6 +30,23 @@ const navigationLinks = [
 ];
 
 export default function Navbar() {
+  const { data } = useGetMeQuery(undefined);
+  const user = data?.data;
+  const [logOut] = useLogOutMutation();
+  const dispatch = useAppDispatch();
+
+  const handleLogout = async () => {
+    try {
+      await logOut(undefined).unwrap();
+      dispatch(authApi.util.resetApiState());
+      toast.success("Logout successfull.");
+    } catch (err) {
+      //
+      toast.success("Logout failed.");
+      console.log(err);
+    }
+  };
+
   return (
     <header className="border-b px-4 md:px-6 container bg-background">
       <div className="flex h-16 items-center justify-between gap-4">
@@ -107,9 +132,20 @@ export default function Navbar() {
         {/* Right side */}
         <div className="flex items-center gap-2">
           <ModeToggle></ModeToggle>
-          <Button asChild size="default" className="">
-            <Link to={"/auth/login"}>Login</Link>
-          </Button>
+          {!user && (
+            <Button asChild size="default" className="">
+              <Link to={"/auth/login"}>Login</Link>
+            </Button>
+          )}
+          {user && (
+            <Button
+              onClick={() => handleLogout()}
+              size="default"
+              variant={"outline"}
+            >
+              Logout
+            </Button>
+          )}
         </div>
       </div>
     </header>

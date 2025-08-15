@@ -1,5 +1,7 @@
+import { useState } from "react";
 import SocialLoginButtons from "@/components/modules/auth/SocialBtn";
 import { z } from "zod";
+import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -13,8 +15,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
-import { useLoginMutation } from "@/redux/features/auth/auth.api";
+import {
+  useLoginMutation,
+  useSendOtpMutation,
+} from "@/redux/features/auth/auth.api";
 import PasswordInput from "@/components/ui/passwordInput";
+import type { IError } from "@/types";
 
 const LoginSchema = z.object({
   email: z.email("Input a valid email."),
@@ -32,7 +38,10 @@ export default function Login() {
     },
   });
 
+  const [IsVerified, setIsVerified] = useState(true);
   const [login] = useLoginMutation();
+  const [sendOtp] = useSendOtpMutation(undefined);
+  const navigate = useNavigate();
 
   const onSubmit = async (data: TLoginValues) => {
     const userInfo = {
@@ -40,14 +49,54 @@ export default function Login() {
       password: data.password,
     };
     try {
-      const result = await login(userInfo);
-      console.log(result);
+      await login(userInfo).unwrap();
+
       toast.success("Login successfull.");
-    } catch (error) {
+      navigate("/");
+    } catch (err) {
+      const error = err as IError;
+
+      if (error.status === 404) {
+        form.setError("password", {
+          type: "manual",
+          message: "Incorrect Password !!!",
+        });
+        toast.error("Incorrect password !!!");
+        return;
+      } else if (error.status === 420) {
+        form.setError("email", {
+          type: "manual",
+          message: "User does not exist.",
+        });
+        toast.error("User does not exist.");
+        return;
+      } else if (error.status === 406) {
+        setIsVerified(false);
+        form.setError("email", {
+          type: "manual",
+          message: "User is not verified.",
+        });
+        toast.error("User is not verified.");
+        return;
+      }
+
       console.log(error);
       toast.error("Login failed.");
     }
   };
+
+  const verifyClick = async (email: string) => {
+    try {
+      sendOtp({ email });
+      navigate("/auth/verify", {
+        state: email,
+      });
+      toast.success("Verify otp send successfully.");
+    } catch (err: unknown) {
+      toast.error("Verify otp send unsuccessfully.");
+    }
+  };
+
   return (
     <div className="max-w-md mx-auto my-10 p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
       <h2 className="text-2xl font-semibold text-center mb-6">Login Here</h2>
@@ -67,6 +116,7 @@ export default function Login() {
                     {...field}
                   />
                 </FormControl>
+
                 <FormMessage />
               </>
             )}
@@ -87,13 +137,24 @@ export default function Login() {
           />
 
           {/* Submit Button */}
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={form.formState.isSubmitting}
-          >
-            {form.formState.isSubmitting ? "Logging in..." : "Login Now"}
-          </Button>
+          {IsVerified ? (
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? "Logging in..." : "Login Now"}
+            </Button>
+          ) : (
+            <Button
+              onClick={() => verifyClick(form.getValues("email"))}
+              className="w-full"
+              variant={"outline"}
+              disabled={form.formState.isSubmitting}
+            >
+              Verify Now
+            </Button>
+          )}
         </form>
       </Form>
       <div className="space-y-2 mt-4">
