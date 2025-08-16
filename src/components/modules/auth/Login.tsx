@@ -21,6 +21,7 @@ import {
 } from "@/redux/features/auth/auth.api";
 import PasswordInput from "@/components/ui/passwordInput";
 import type { IError } from "@/types";
+import { useMe } from "@/hooks/useMe";
 
 const LoginSchema = z.object({
   email: z.email("Input a valid email."),
@@ -42,7 +43,7 @@ export default function Login() {
   const [login] = useLoginMutation();
   const [sendOtp] = useSendOtpMutation(undefined);
   const navigate = useNavigate();
-
+  const { refetch } = useMe();
   const onSubmit = async (data: TLoginValues) => {
     const userInfo = {
       email: data.email,
@@ -50,7 +51,7 @@ export default function Login() {
     };
     try {
       await login(userInfo).unwrap();
-
+      refetch();
       toast.success("Login successfull.");
       navigate("/");
     } catch (err) {

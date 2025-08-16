@@ -11,26 +11,44 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { adminSidebarItems } from "@/router/adminSidebarNav";
-
-const data = {
-  navMain: adminSidebarItems,
-};
+import { getSidebarItems } from "@/utils/getSidebarItems";
+import { useGetMeQuery } from "@/redux/features/auth/auth.api";
+import { Button } from "@/components/ui/button";
+import Logo from "@/assets/icons/logo";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: me } = useGetMeQuery(undefined);
+
+  const role = me?.data?.role ? me?.data?.role : "USER";
+
+  const data = {
+    navMain: getSidebarItems(role),
+  };
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader></SidebarHeader>
+      <SidebarHeader className=" flex flex-row justify-between">
+        <Logo></Logo>
+        <Button variant={"outline"} asChild>
+          <Link to="/">Home</Link>
+        </Button>
+      </SidebarHeader>
       {data.navMain.map((item) => (
         <SidebarGroup key={item.title}>
           <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+
           <SidebarGroupContent>
             <SidebarMenu>
               {item.items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link to={item.url} className="flex items-center gap-2">
-                      <item.icon className="size-4 text-muted-foreground" />
+                    <Link
+                      to={item.url || ""}
+                      className="flex items-center gap-2"
+                    >
+                      {item.icon && (
+                        <item.icon className="size-4 text-muted-foreground" />
+                      )}
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>

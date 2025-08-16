@@ -6,9 +6,11 @@ import ErrorPage from "@/page/shared/ErrorPage";
 import MainLayout from "@/layouts/MainLayout";
 import NotFound from "@/page/shared/NotFound";
 import { createBrowserRouter } from "react-router";
-import Bookings from "@/page/user/Bookings";
 import { generateRoutes } from "@/utils/generateRoutes";
 import { adminSidebarItems } from "@/router/adminSidebarNav";
+import { userSidebarItems } from "@/router/userSidebarNav";
+import { checkAuth } from "@/utils/checkAuth";
+import { Role } from "@/constants/role";
 
 export const router = createBrowserRouter([
   {
@@ -33,18 +35,13 @@ export const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    Component: DashboardLayout,
+    Component: checkAuth(DashboardLayout, [Role.SUPER_ADMIN, Role.ADMIN]),
     children: [...generateRoutes(adminSidebarItems)],
   },
 
   {
     path: "/user",
-    Component: DashboardLayout,
-    children: [
-      {
-        path: "bookings",
-        element: <Bookings />,
-      },
-    ],
+    Component: checkAuth(DashboardLayout, [Role.USER]),
+    children: [...generateRoutes(userSidebarItems)],
   },
 ]);
