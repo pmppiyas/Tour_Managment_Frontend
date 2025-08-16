@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 import {
   Card,
   CardHeader,
@@ -27,8 +28,9 @@ export default function TourCard({ tour }: { tour: any }) {
     setModalOpen(true);
   };
 
-  const handleDetail = () => {
-    console.log("Detail clicked for:", tour._id);
+  const navigate = useNavigate();
+  const handleDetail = (tourId: string) => {
+    navigate(`/tour/details/${tourId}`);
   };
 
   return (
@@ -67,7 +69,7 @@ export default function TourCard({ tour }: { tour: any }) {
           <Button variant="outline" onClick={() => handleEdit(tour)}>
             Edit
           </Button>
-          <Button variant="default" onClick={handleDetail}>
+          <Button variant="default" onClick={() => handleDetail(tour.slug)}>
             Detail
           </Button>
         </CardFooter>

@@ -11,6 +11,7 @@ import { adminSidebarItems } from "@/router/adminSidebarNav";
 import { userSidebarItems } from "@/router/userSidebarNav";
 import { checkAuth } from "@/middleware/checkAuth";
 import { Role } from "@/constants/role";
+import TourDetail from "@/components/modules/tour/TourDetail";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: "/auth/verify",
         Component: Verify,
+      },
+      {
+        path: "/tour/details/:slug",
+        Component: TourDetail,
       },
     ],
   },
