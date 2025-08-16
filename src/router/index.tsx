@@ -9,7 +9,7 @@ import { createBrowserRouter } from "react-router";
 import { generateRoutes } from "@/utils/generateRoutes";
 import { adminSidebarItems } from "@/router/adminSidebarNav";
 import { userSidebarItems } from "@/router/userSidebarNav";
-import { checkAuth } from "@/utils/checkAuth";
+import { checkAuth } from "@/middleware/checkAuth";
 import { Role } from "@/constants/role";
 
 export const router = createBrowserRouter([
