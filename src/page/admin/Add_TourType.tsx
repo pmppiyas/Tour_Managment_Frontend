@@ -14,6 +14,7 @@ import { useGetTourtypeQuery } from "@/redux/features/tour/tour.api";
 import TourTypeUpdateModal from "@/components/modules/tourType/TourTypeUpdateModal";
 import TourTypeDeleteModal from "@/components/modules/tourType/TourTypeDeleteModal";
 import { toast } from "sonner";
+import TourTypeAddModal from '@/components/modules/tourType/TourTypeAddModal';
 
 export default function Add_TourType() {
   const { data, isLoading } = useGetTourtypeQuery(undefined);
@@ -21,6 +22,7 @@ export default function Add_TourType() {
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [addModalOpen, setAddModalOpen] = useState(false);
 
   const handleEdit = (tour: string) => {
     setSelectedTour(tour);
@@ -36,7 +38,16 @@ export default function Add_TourType() {
 
   return (
     <Table>
-      <TableCaption>Available Tour Types</TableCaption>
+      <TableCaption>
+        <div className="flex justify-center mb-4">
+          <button
+            onClick={() => setAddModalOpen(true)}
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            Add Tour Type
+          </button>
+        </div>
+      </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead className="w-[200px]">Name</TableHead>
@@ -75,6 +86,17 @@ export default function Add_TourType() {
           </TableCell>
         </TableRow>
       </TableFooter>
+
+      {addModalOpen && (
+        <TourTypeAddModal
+          open={addModalOpen}
+          onClose={() => setAddModalOpen(false)}
+          onAddSuccess={() => {
+            setAddModalOpen(false);
+            toast.success("New tour type added");
+          }}
+        />
+      )}
 
       {modalOpen && selectedTour && (
         <TourTypeUpdateModal

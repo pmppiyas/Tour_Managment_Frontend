@@ -8,6 +8,7 @@ export const tourAPi = baseApi.injectEndpoints({
         method: "POST",
         data: userInfo,
       }),
+      invalidatesTags: ["TOUR"],
     }),
 
     getTourtype: builder.query({
@@ -25,6 +26,7 @@ export const tourAPi = baseApi.injectEndpoints({
         method: "PATCH",
         data: userInfo.name,
       }),
+      invalidatesTags: ["TOUR"],
     }),
     deleteTourtype: builder.mutation({
       query: (tourId: string) => ({
