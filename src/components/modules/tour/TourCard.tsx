@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
@@ -5,36 +7,78 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import TourDeleteModal from "@/components/modules/tour/TourDeleteModal";
+import { toast } from "sonner";
 
 export default function TourCard({ tour }: { tour: any }) {
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+
+  const handleDelete = (id: string) => {
+    setDeleteTargetId(id);
+    setDeleteModalOpen(true);
+  };
+  const handleEdit = () => {
+    console.log("Edit clicked for:", tour._id);
+  };
+
+  const handleDetail = () => {
+    console.log("Detail clicked for:", tour._id);
+  };
+
   return (
-    <Card className="w-full shadow-sm hover:shadow-md transition">
-      <CardHeader>
-        {tour.image ? (
-          <img
-            src={tour.images?.[0]}
-            alt={tour.name}
-            className="w-full h-40 object-cover rounded-md "
-          />
-        ) : (
-          <div className="h-40  border-2 rounded-md"></div>
-        )}
-        <CardTitle className="mt-2 text-lg">{tour.name}</CardTitle>
-      </CardHeader>
+    <>
+      <Card className="w-full shadow-sm hover:shadow-md transition">
+        <CardHeader>
+          {tour.images?.[0] ? (
+            <img
+              src={tour.images[0]}
+              alt={tour.name}
+              className="w-full h-40 object-cover rounded-md"
+            />
+          ) : (
+            <div className="h-40 border-2 rounded-md bg-gray-100 flex items-center justify-center text-gray-400">
+              No Image
+            </div>
+          )}
+          <CardTitle className="mt-2 text-lg">{tour.name}</CardTitle>
+        </CardHeader>
 
-      <CardContent className="text-sm text-muted-foreground space-y-1">
-        <p>📍 Location: {tour.location}</p>
-        <p>💰 Cost: ৳{tour.costFrom}</p>
-        <p>👥 Max Guests: {tour.maxGuest}</p>
-        <p>
-          🗓️ {new Date(tour.startDate).toLocaleDateString()} →{" "}
-          {new Date(tour.endDate).toLocaleDateString()}
-        </p>
-      </CardContent>
+        <CardContent className="text-sm text-muted-foreground space-y-1">
+          <p>📍 Location: {tour.location}</p>
+          <p>💰 Cost: ৳{tour.costFrom}</p>
+          <p>👥 Max Guests: {tour.maxGuest}</p>
+          <p>
+            🗓️ {new Date(tour.startDate).toLocaleDateString()} →{" "}
+            {new Date(tour.endDate).toLocaleDateString()}
+          </p>
+          <p>ℹ️ Includes: {tour.included?.join(", ")}</p>
+        </CardContent>
 
-      <CardFooter className="text-xs text-gray-500">
-        Includes: {tour.included?.join(", ")}
-      </CardFooter>
-    </Card>
+        <CardFooter className="flex justify-end gap-2">
+          <Button variant="destructive" onClick={() => handleDelete(tour._id)}>
+            Delete
+          </Button>
+          <Button variant="outline" onClick={handleEdit}>
+            Edit
+          </Button>
+          <Button variant="default" onClick={handleDetail}>
+            Detail
+          </Button>
+        </CardFooter>
+      </Card>
+
+      {deleteModalOpen && deleteTargetId && (
+        <TourDeleteModal
+          tourId={deleteTargetId}
+          open={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          onDeleteSuccess={() => {
+            setDeleteModalOpen(false);
+            toast.success("Tour type deleted successfull");
+          }}
+        />
+      )}
+    </>
   );
 }

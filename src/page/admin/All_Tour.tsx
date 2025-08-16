@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import TourCard from "@/components/modules/tour/TourCard";
 import { useState } from "react";
 import TourPagination from "@/components/modules/tour/TourPagination";
@@ -13,12 +12,14 @@ export default function All_Tour() {
 
   return (
     <div>
-      <h1 className="text-3xl text-center uppercase font-medium"> All Tour</h1>
+      <h1 className="text-3xl text-center uppercase font-medium mb-6">
+        All Tour
+      </h1>
 
-      {/*Tour Card */}
-      <div className="grid lg:grid-cols-2 gap-8 p-4 md:p-8 ">
-        {data.tours.map((data: any) => (
-          <TourCard key={data._id} tour={data} />
+      {/* Tour Cards */}
+      <div className="grid lg:grid-cols-2 gap-8 p-4 md:p-8">
+        {data.tours.map((tour: any) => (
+          <TourCard key={tour._id} tour={tour} />
         ))}
       </div>
 
