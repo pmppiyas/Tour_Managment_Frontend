@@ -1,36 +1,39 @@
 import { baseApi } from "@/redux/baseApi";
 
-export const tourAPi = baseApi.injectEndpoints({
+export const tourTypeAPi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    addTourtype: builder.mutation({
+    addTour: builder.mutation({
       query: (userInfo) => ({
-        url: "/tour/create-tour-type",
+        url: "/tour/create",
         method: "POST",
         data: userInfo,
       }),
       invalidatesTags: ["TOUR"],
     }),
 
-    getTourtype: builder.query({
-      query: () => ({
-        url: "/tour/tour_types",
-        method: "GET",
-      }),
-      transformResponse: (arg) => arg.data,
+    getTour: builder.query({
+      query: (args: { page?: number } = {}) => {
+        const { page = 1 } = args;
+        return {
+          url: `/tour?page=${page}`,
+          method: "GET",
+        };
+      },
+      transformResponse: (response) => response.data,
       providesTags: ["TOUR"],
     }),
 
-    updateTourtype: builder.mutation({
+    updateTour: builder.mutation({
       query: (userInfo) => ({
-        url: `/tour/tour_types/${userInfo.tour}`,
+        url: `/tour/${userInfo.tour}`,
         method: "PATCH",
         data: userInfo.name,
       }),
       invalidatesTags: ["TOUR"],
     }),
-    deleteTourtype: builder.mutation({
+    deleteTour: builder.mutation({
       query: (tourId: string) => ({
-        url: `/tour/tour_types/${tourId}`,
+        url: `/tour/${tourId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["TOUR"],
@@ -39,8 +42,8 @@ export const tourAPi = baseApi.injectEndpoints({
 });
 
 export const {
-  useAddTourtypeMutation,
-  useGetTourtypeQuery,
-  useUpdateTourtypeMutation,
-  useDeleteTourtypeMutation,
-} = tourAPi;
+  useAddTourMutation,
+  useGetTourQuery,
+  useUpdateTourMutation,
+  useDeleteTourMutation,
+} = tourTypeAPi;

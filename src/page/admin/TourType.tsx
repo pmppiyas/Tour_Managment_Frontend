@@ -10,11 +10,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Loading from "@/page/shared/Loading";
-import { useGetTourtypeQuery } from "@/redux/features/tour/tour.api";
+import { useGetTourtypeQuery } from "@/redux/features/tour/tourType.api";
 import TourTypeUpdateModal from "@/components/modules/tourType/TourTypeUpdateModal";
 import TourTypeDeleteModal from "@/components/modules/tourType/TourTypeDeleteModal";
 import { toast } from "sonner";
-import TourTypeAddModal from '@/components/modules/tourType/TourTypeAddModal';
+import TourTypeAddModal from "@/components/modules/tourType/TourTypeAddModal";
 
 export default function Add_TourType() {
   const { data, isLoading } = useGetTourtypeQuery(undefined);

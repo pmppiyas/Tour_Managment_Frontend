@@ -7,7 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { useUpdateTourtypeMutation } from "@/redux/features/tour/tour.api";
+import { useUpdateTourtypeMutation } from "@/redux/features/tour/tourType.api";
 
 export default function TourTypeUpdateModal({
   tour,

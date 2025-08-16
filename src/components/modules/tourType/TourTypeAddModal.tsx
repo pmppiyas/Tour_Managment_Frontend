@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useAddTourtypeMutation } from "@/redux/features/tour/tour.api";
+import { useAddTourtypeMutation } from "@/redux/features/tour/tourType.api";
 import { toast } from "sonner";
 import type { IError } from "@/types";
 
@@ -31,7 +31,6 @@ export default function TourTypeAddModal({
 
     try {
       await addTourtype({ name }).unwrap();
-      toast.success("Tour type added successfully");
       setName("");
       onClose();
       onAddSuccess?.();

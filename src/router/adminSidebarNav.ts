@@ -1,5 +1,5 @@
 import Add_Tour from "@/page/admin/Add_Tour";
-import Add_TourType from "@/page/admin/Add_TourType";
+import Add_TourType from "@/page/admin/TourType";
 import All_Tour from "@/page/admin/All_Tour";
 import Analytics from "@/page/admin/Analytics";
 import type { ISidebarItem } from "@/types";
@@ -40,7 +40,7 @@ export const adminSidebarItems: ISidebarItem[] = [
         icon: IconCopyPlus,
       },
       {
-        title: "Add Tour Type",
+        title: "Manage Tour Type",
         url: "add_tourtype",
         component: Add_TourType,
         icon: IconCopyPlus,

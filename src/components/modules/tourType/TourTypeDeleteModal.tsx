@@ -3,9 +3,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogFooter,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useDeleteTourtypeMutation } from "@/redux/features/tour/tour.api";
+import { useDeleteTourtypeMutation } from "@/redux/features/tour/tourType.api";
 
 interface Props {
   tourId: string;
@@ -36,9 +37,11 @@ export default function TourTypeDeleteModal({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <h2 className="text-lg font-semibold text-red-500">
-            Confirm Deletion
-          </h2>
+          <DialogTitle>
+            <h2 className="text-lg font-semibold text-red-500">
+              Confirm Deletion
+            </h2>
+          </DialogTitle>
         </DialogHeader>
         <p className="text-sm ">
           Are you sure you want to delete this tour type? This action cannot be
