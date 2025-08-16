@@ -1,14 +1,14 @@
+import React, { type JSX } from "react";
 import { useMe } from "@/hooks/useMe";
 import type { IError, TRole } from "@/types";
 import { Navigate } from "react-router";
 
-export function checkAuth<P>(
+export function checkAuth<P extends object>(
   Component: React.ComponentType<P>,
   requiredRoles: TRole[]
 ) {
-  return function AuthWrapper(props: P) {
+  return function (props: P): JSX.Element {
     const { me, loading, error } = useMe();
-
     const err = error as IError;
 
     if (loading) return <p>Loading...</p>;
