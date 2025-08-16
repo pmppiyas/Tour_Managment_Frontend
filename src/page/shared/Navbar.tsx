@@ -13,11 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ModeToggle } from "@/components/ui/themeToggle";
-import {
-  authApi,
-  useGetMeQuery,
-  useLogOutMutation,
-} from "@/redux/features/auth/auth.api";
+import { authApi, useLogOutMutation } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
 import { useAppDispatch } from "@/redux/hooks";
 import { Role } from "@/constants/role";

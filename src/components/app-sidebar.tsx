@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/sidebar";
 import { getSidebarItems } from "@/utils/getSidebarItems";
 import { useGetMeQuery } from "@/redux/features/auth/auth.api";
-import { Button } from "@/components/ui/button";
 import Logo from "@/assets/icons/logo";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -29,9 +28,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader className=" flex flex-row justify-between">
         <Logo></Logo>
-        <Button variant={"outline"} asChild>
-          <Link to="/">Home</Link>
-        </Button>
       </SidebarHeader>
       {data.navMain.map((item) => (
         <SidebarGroup key={item.title}>
