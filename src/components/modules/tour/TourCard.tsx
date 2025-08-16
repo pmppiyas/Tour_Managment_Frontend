@@ -9,8 +9,11 @@ import {
 } from "@/components/ui/card";
 import TourDeleteModal from "@/components/modules/tour/TourDeleteModal";
 import { toast } from "sonner";
+import TourUpdateModal from "@/components/modules/tour/TourUpdateModal";
 
 export default function TourCard({ tour }: { tour: any }) {
+  const [selectedTour, setSelectedTour] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
@@ -18,8 +21,10 @@ export default function TourCard({ tour }: { tour: any }) {
     setDeleteTargetId(id);
     setDeleteModalOpen(true);
   };
-  const handleEdit = () => {
-    console.log("Edit clicked for:", tour._id);
+
+  const handleEdit = (tour: string) => {
+    setSelectedTour(tour);
+    setModalOpen(true);
   };
 
   const handleDetail = () => {
@@ -59,7 +64,7 @@ export default function TourCard({ tour }: { tour: any }) {
           <Button variant="destructive" onClick={() => handleDelete(tour._id)}>
             Delete
           </Button>
-          <Button variant="outline" onClick={handleEdit}>
+          <Button variant="outline" onClick={() => handleEdit(tour)}>
             Edit
           </Button>
           <Button variant="default" onClick={handleDetail}>
@@ -67,6 +72,18 @@ export default function TourCard({ tour }: { tour: any }) {
           </Button>
         </CardFooter>
       </Card>
+
+      {modalOpen && selectedTour && (
+        <TourUpdateModal
+          tour={selectedTour}
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onUpdate={() => {
+            setModalOpen(false);
+            toast.success("Tour modified successfully");
+          }}
+        />
+      )}
 
       {deleteModalOpen && deleteTargetId && (
         <TourDeleteModal

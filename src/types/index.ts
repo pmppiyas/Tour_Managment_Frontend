@@ -1,4 +1,5 @@
 export type { ILogin, ISendOtp, IVerify } from "./auth.types";
+export type { TTourUpdateModalProps } from "./tour.types";
 import { type ComponentType } from "react";
 
 export interface IResponse<T> {

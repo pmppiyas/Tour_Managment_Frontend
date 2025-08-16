@@ -25,7 +25,6 @@ export default function TourTypeUpdateModal({
       name,
     };
     updateTourtype(userInfo);
-    console.log(userInfo);
     onClose();
   };
 
