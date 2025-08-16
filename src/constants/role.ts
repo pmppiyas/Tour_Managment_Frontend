@@ -4,5 +4,3 @@ export const Role = {
   USER: "USER",
   GUIDE: "GUIDE",
 } as const;
-
-

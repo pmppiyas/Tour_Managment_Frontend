@@ -10,6 +10,7 @@ export const userSidebarItems: ISidebarItem[] = [
         url: "bookings",
         component: Bookings,
         icon: IconDashboard,
+        index: true,
       },
     ],
   },

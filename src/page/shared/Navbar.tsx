@@ -1,6 +1,5 @@
 import Logo from "@/assets/icons/logo";
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -21,17 +20,31 @@ import {
 } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
 import { useAppDispatch } from "@/redux/hooks";
-
-const navigationLinks = [
-  { href: "/", label: "Home", active: true },
-  { href: "/features", label: "Features" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/about", label: "About" },
-];
+import { Role } from "@/constants/role";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Navbar() {
-  const { data } = useGetMeQuery(undefined);
-  const user = data?.data;
+  const { me: user } = useAuth();
+  const userRole = user?.role;
+
+  const navigationLinks = [
+    { href: "/", label: "Home", active: true, roles: ["PUBLIC"] },
+    { href: "/features", label: "Features", roles: ["PUBLIC"] },
+    {
+      href: "/admin",
+      label: "Dashboard",
+      roles: [Role.SUPER_ADMIN, Role.ADMIN],
+    },
+    { href: "/user", label: "Dashboard", roles: [Role.USER] },
+    { href: "/pricing", label: "Pricing", roles: [Role.USER] },
+    { href: "/about", label: "About", roles: ["PUBLIC"] },
+  ];
+
+  const navbar = navigationLinks.filter((link) => {
+    if (link.roles.includes("PUBLIC")) return true;
+    return link.roles.includes(userRole);
+  });
+
   const [logOut] = useLogOutMutation();
   const dispatch = useAppDispatch();
 
@@ -90,14 +103,14 @@ export default function Navbar() {
             <PopoverContent align="start" className="w-36 p-1 md:hidden">
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
-                  {navigationLinks.map((link, index) => (
+                  {navbar.map((link, index) => (
                     <NavigationMenuItem key={index} className="w-full">
                       <NavigationMenuLink
                         asChild
                         className="py-1.5"
                         active={link.active}
                       >
-                        <Link to={link.href}> {link.label}</Link>
+                        <Link to={link.href}>{link.label}</Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   ))}
@@ -113,7 +126,7 @@ export default function Navbar() {
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
-                {navigationLinks.map((link, index) => (
+                {navbar.map((link, index) => (
                   <NavigationMenuItem key={index}>
                     <NavigationMenuLink
                       asChild
