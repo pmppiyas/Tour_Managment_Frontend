@@ -18,15 +18,15 @@ export default function All_Tour() {
 
       {/* Tour Cards */}
       <div className="grid lg:grid-cols-2 gap-8 p-4 md:p-8">
-        {data.tours.map((tour: any) => (
-          <TourCard key={tour._id} tour={tour} />
+        {data?.tours?.map((tour: any) => (
+          <TourCard key={tour?._id} tour={tour} />
         ))}
       </div>
 
       {/* Pagination */}
       <TourPagination
-        page={data.meta.page}
-        totalPage={data.meta.totalPage}
+        page={data?.meta?.page}
+        totalPage={data?.meta?.totalPage}
         onPageChange={(newPage) => setCurrentPage(newPage)}
       />
     </div>

@@ -1,9 +1,10 @@
 import Add_Tour from "@/page/admin/Add_Tour";
 import Add_TourType from "@/page/admin/TourType";
-import All_Tour from "@/page/admin/All_Tour";
+import All_Tour from "@/page/shared/All_Tour";
 import Analytics from "@/page/admin/Analytics";
 import type { ISidebarItem } from "@/types";
 import { IconDashboard, IconCopyPlus, IconTexture } from "@tabler/icons-react";
+import All_Division from "@/page/admin/All_Division";
 
 export const adminSidebarItems: ISidebarItem[] = [
   {
@@ -41,8 +42,14 @@ export const adminSidebarItems: ISidebarItem[] = [
       },
       {
         title: "Manage Tour Type",
-        url: "add_tourtype",
+        url: "tourtype",
         component: Add_TourType,
+        icon: IconCopyPlus,
+      },
+      {
+        title: "Manage Tour Division",
+        url: "tour_division",
+        component: All_Division,
         icon: IconCopyPlus,
       },
     ],
