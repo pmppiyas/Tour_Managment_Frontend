@@ -11,19 +11,21 @@ import {
 } from "@/components/ui/table";
 import Loading from "@/page/shared/Loading";
 import { useGetAllDivisionQuery } from "@/redux/features/division/division.api";
-
+import DivisionAddModal from "@/components/modules/division/DivisionAddModal";
+import { toast } from "sonner";
+import DivisionDeleteModal from "@/components/modules/division/DivisionDeleteModal";
+import DivisionUpdateModal from "@/components/modules/division/DivisionUpdateModal";
 export default function All_Division() {
   const { data, isLoading } = useGetAllDivisionQuery(undefined);
 
-  const [selectedTour, setSelectedTour] = useState<string | null>(null);
+  const [selectedDivision, setSelectedDivision] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
-  console.log(data);
 
   const handleEdit = (tour: string) => {
-    setSelectedTour(tour);
+    setSelectedDivision(tour);
     setModalOpen(true);
   };
 
@@ -87,6 +89,40 @@ export default function All_Division() {
           </TableCell>
         </TableRow>
       </TableFooter>
+
+      {addModalOpen && (
+        <DivisionAddModal
+          open={addModalOpen}
+          onClose={() => setAddModalOpen(false)}
+          onAddSuccess={() => {
+            setAddModalOpen(false);
+            toast.success("New tour type added");
+          }}
+        />
+      )}
+
+      {modalOpen && selectedDivision && (
+        <DivisionUpdateModal
+          division={selectedDivision}
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onUpdate={() => {
+            setModalOpen(false);
+          }}
+        />
+      )}
+
+      {deleteModalOpen && deleteTargetId && (
+        <DivisionDeleteModal
+          id={deleteTargetId}
+          open={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          onDeleteSuccess={() => {
+            setDeleteModalOpen(false);
+            toast.success("Tour type deleted successfull");
+          }}
+        />
+      )}
     </Table>
   );
 }

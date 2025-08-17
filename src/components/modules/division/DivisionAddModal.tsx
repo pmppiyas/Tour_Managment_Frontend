@@ -7,10 +7,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-// import { useAddTourtypeMutation } from "@/redux/features/tour/tourType.api";
 import { toast } from "sonner";
 import type { IError } from "@/types";
-import { useCreateTourTypeMutation } from "@/redux/features/tour/tourType.api";
+import { useCreateDivisionMutation } from "@/redux/features/division/division.api";
 
 interface Props {
   open: boolean;
@@ -18,28 +17,27 @@ interface Props {
   onAddSuccess?: () => void;
 }
 
-export default function TourTypeAddModal({
+export default function DivisionAddModal({
   open,
   onClose,
   onAddSuccess,
 }: Props) {
   const [name, setName] = useState("");
-  const [createTourType, { isLoading }] = useCreateTourTypeMutation(undefined);
+  const [addDivision, { isLoading }] = useCreateDivisionMutation(undefined);
   const [duplcate, setDuplicate] = useState("");
 
   const handleSubmit = async () => {
     if (!name.trim()) return toast.error("Name is required");
 
     try {
-      await createTourType({ name }).unwrap();
+      await addDivision({ name }).unwrap();
       setName("");
       onClose();
       onAddSuccess?.();
     } catch (err) {
       const error = err as IError;
-      console.log(error);
-      if (error.status === 000) {
-        toast.error("This tour type already exists");
+      if (error.status === 409) {
+        toast.error("This division already exists");
         setDuplicate("This tour type already exists");
       } else {
         toast.error("Failed to add tour type");
@@ -51,7 +49,7 @@ export default function TourTypeAddModal({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Add New Tour Type</DialogTitle>
+          <DialogTitle>Add Tour Type</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <Input

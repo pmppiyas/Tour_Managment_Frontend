@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/table";
 import Loading from "@/page/shared/Loading";
 
-import TourTypeUpdateModal from "@/components/modules/tourType/TourTypeUpdateModal";
-import TourTypeDeleteModal from "@/components/modules/tourType/TourTypeDeleteModal";
+import TourTypeUpdateModal from "@/components/modules/division/DivisionUpdateModal";
+import TourTypeDeleteModal from "@/components/modules/division/DivisionDeleteModal";
 import { toast } from "sonner";
-import TourTypeAddModal from "@/components/modules/tourType/TourTypeAddModal";
+import TourTypeAddModal from "@/components/modules/division/DivisionAddModal";
 import { useGetTourtypeQuery } from "@/redux/features/tour/tourType.api";
 
 export default function Add_TourType() {
@@ -112,7 +112,7 @@ export default function Add_TourType() {
 
       {deleteModalOpen && deleteTargetId && (
         <TourTypeDeleteModal
-          tourId={deleteTargetId}
+          id={deleteTargetId}
           open={deleteModalOpen}
           onClose={() => setDeleteModalOpen(false)}
           onDeleteSuccess={() => {

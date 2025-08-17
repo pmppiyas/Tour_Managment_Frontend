@@ -8,6 +8,8 @@ export const divisionApi = baseApi.injectEndpoints({
         method: "POST",
         data: userInfo,
       }),
+
+      invalidatesTags: ["DIVISION"],
     }),
 
     getAllDivision: builder.query({
@@ -16,7 +18,7 @@ export const divisionApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       transformResponse: (response) => response.data,
-      providesTags: ["USER"],
+      providesTags: ["DIVISION"],
     }),
 
     getADivision: builder.query({
@@ -24,23 +26,24 @@ export const divisionApi = baseApi.injectEndpoints({
         url: `/division/${slug}`,
         method: "POST",
       }),
-      providesTags: ["USER"],
+      providesTags: ["DIVISION"],
     }),
 
     updateDivision: builder.mutation({
       query: (userInfo) => ({
-        url: `division/${userInfo.id}`,
+        url: `division/${userInfo.division}`,
         method: "PATCH",
-        data: userInfo.data,
+        data: userInfo.name,
       }),
+      invalidatesTags: ["DIVISION"],
     }),
 
-    deleteTour: builder.mutation({
+    deleteDivision: builder.mutation({
       query: (divisionId: string) => ({
-        url: `/tour/${divisionId}`,
+        url: `/division/${divisionId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["TOUR"],
+      invalidatesTags: ["DIVISION"],
     }),
   }),
 });
@@ -50,5 +53,5 @@ export const {
   useGetAllDivisionQuery,
   useGetADivisionQuery,
   useUpdateDivisionMutation,
-  useDeleteTourMutation,
+  useDeleteDivisionMutation,
 } = divisionApi;
