@@ -77,8 +77,10 @@ export default function Add_Tour() {
     }
   };
   return (
-    <div className="my-10 p-6 border rounded-lg shadow-sm bg-accent ">
-      <h2 className="text-2xl font-semibold text-center mb-6">Create Tour</h2>
+    <div className=" p-4  rounded-lg shadow-sm">
+      <h1 className="text-3xl text-center uppercase font-medium mb-6">
+        Add Tour
+      </h1>
 
       <Form {...form}>
         <form

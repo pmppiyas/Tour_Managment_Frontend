@@ -20,7 +20,7 @@ export default function DashboardLayout() {
       <SidebarInset>
         <SiteHeader />
 
-        <div className="flex flex-col gap-4 p-4 md:gap-6 md:p-6  h-full  border-3 ">
+        <div className="flex flex-col gap-4 p-4 md:gap-6 md:p-6  h-full  ">
           <Outlet />
 
         </div>

@@ -38,7 +38,7 @@ export default function Add_TourType() {
   };
 
   return (
-    <div>
+    <div className=" p-4  rounded-lg shadow-sm">
       <h1 className="text-3xl text-center uppercase font-medium mb-6">
         All Tour types
       </h1>
