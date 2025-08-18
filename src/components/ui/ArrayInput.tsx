@@ -30,7 +30,7 @@ export function ArrayInput({
           />
           <Button
             type="button"
-            variant="destructive"
+            className="bg-red-500 hover:bg-red-600"
             size="icon"
             onClick={() => remove(index)}
           >

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import {
   Table,
@@ -15,6 +16,7 @@ import DivisionAddModal from "@/components/modules/division/DivisionAddModal";
 import { toast } from "sonner";
 import DivisionDeleteModal from "@/components/modules/division/DivisionDeleteModal";
 import DivisionUpdateModal from "@/components/modules/division/DivisionUpdateModal";
+import { Button } from '@/components/ui/button';
 export default function All_Division() {
   const { data, isLoading } = useGetAllDivisionQuery(undefined);
 
@@ -45,12 +47,7 @@ export default function All_Division() {
 
         <TableCaption>
           <div className="flex justify-center mb-4">
-            <button
-              onClick={() => setAddModalOpen(true)}
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-            >
-              Add Division
-            </button>
+            <Button onClick={() => setAddModalOpen(true)}>Add Division</Button>
           </div>
         </TableCaption>
         <TableHeader>
@@ -71,18 +68,12 @@ export default function All_Division() {
               </TableCell>
 
               <TableCell className="flex gap-2 justify-center">
-                <button
-                  onClick={() => handleEdit(division._id)}
-                  className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(division._id)}
-                  className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
+
+
+
+                <Button size={"sm"} onClick={() => handleEdit(division._id)}>Edit</Button>
+
+                <Button onClick={() => handleDelete(division._id)} size={"sm"} className="bg-red-500 hover:bg-red-600">Delete</Button>
               </TableCell>
             </TableRow>
           ))}
@@ -129,6 +120,6 @@ export default function All_Division() {
           />
         )}
       </Table>
-    </div>
+    </div >
   );
 }

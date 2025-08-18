@@ -16,6 +16,7 @@ import TourTypeDeleteModal from "@/components/modules/division/DivisionDeleteMod
 import { toast } from "sonner";
 import TourTypeAddModal from "@/components/modules/division/DivisionAddModal";
 import { useGetTourtypeQuery } from "@/redux/features/tour/tourType.api";
+import { Button } from '@/components/ui/button';
 
 export default function Add_TourType() {
   const { data, isLoading } = useGetTourtypeQuery(undefined);
@@ -45,19 +46,17 @@ export default function Add_TourType() {
       <Table>
         <TableCaption>
           <div className="flex justify-center mb-4">
-            <button
-              onClick={() => setAddModalOpen(true)}
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-            >
+
+            <Button onClick={() => setAddModalOpen(true)}>
               Add Tour Type
-            </button>
+            </Button>
           </div>
         </TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[200px]">Name</TableHead>
             <TableHead>Created At</TableHead>
-            <TableHead>Updated At</TableHead>
+            <TableHead >Updated At</TableHead>
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -66,20 +65,12 @@ export default function Add_TourType() {
             <TableRow key={tour._id}>
               <TableCell className="font-medium">{tour.name}</TableCell>
               <TableCell>{new Date(tour.createdAt).toLocaleString()}</TableCell>
-              <TableCell>{new Date(tour.updatedAt).toLocaleString()}</TableCell>
+              <TableCell >{new Date(tour.updatedAt).toLocaleString()}</TableCell>
               <TableCell className="flex gap-2 justify-center">
-                <button
-                  onClick={() => handleEdit(tour._id)}
-                  className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(tour._id)}
-                  className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
+
+                <Button size={"sm"} onClick={() => handleEdit(tour._id)}>Edit</Button>
+
+                <Button onClick={() => handleDelete(tour._id)} size={"sm"} className="bg-red-500 hover:bg-red-600">Delete</Button>
               </TableCell>
             </TableRow>
           ))}

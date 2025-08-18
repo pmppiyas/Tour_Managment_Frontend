@@ -345,7 +345,7 @@ export default function Add_Tour() {
 
           {/* Submit Button */}
           <div className="md:col-span-full">
-            <Button type="submit" className="w-full py-3 text-lg" disabled={form.formState.isSubmitting}>
+            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting ? "Submitting..." : "Create Tour"}
             </Button>
           </div>
