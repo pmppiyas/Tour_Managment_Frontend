@@ -1,4 +1,6 @@
+
 import { Hero } from '@/components/modules/home/Hero';
+
 
 
 export default function HomePage() {
@@ -14,6 +16,7 @@ export default function HomePage() {
           url: "/tours"
         }
       }} />
+
     </div>
   )
 }

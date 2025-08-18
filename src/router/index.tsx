@@ -14,6 +14,7 @@ import { Role } from "@/constants/role";
 import TourDetail from "@/components/modules/tour/TourDetail";
 import All_Tour from '@/page/shared/All_Tour';
 import HomePage from '@/page/shared/HomePage';
+import Features from '@/page/shared/Features';
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
         index: true,
         Component: HomePage,
       },
+      { path: "/features", Component: Features },
       { path: "/auth/register", Component: Register },
       {
         path: "/auth/login",
