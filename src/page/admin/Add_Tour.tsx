@@ -1,10 +1,12 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 import {
   Form,
   FormControl,
   FormField,
+  FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
@@ -16,17 +18,22 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ArrayInput } from "@/components/ui/ArrayInput";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-
+import { toast } from "sonner";
 import { useAddTourMutation } from '@/redux/features/tour/tour.api';
 import { useGetTourtypeQuery } from '@/redux/features/tour/tourType.api';
 import { useGetAllDivisionQuery } from '@/redux/features/division/division.api';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { IError } from '@/types';
 
 export type TourFormData = z.infer<typeof createTourZodObject>;
 
 export default function Add_Tour() {
   const [addTour] = useAddTourMutation();
-  const { data: tourTypes } = useGetTourtypeQuery(undefined);
-  const { data: divisions } = useGetAllDivisionQuery(undefined);
+  const { data: tourTypes, isLoading: tourTypeLoading } = useGetTourtypeQuery(undefined);
+  const { data: divisions, isLoading: divisionLoading } = useGetAllDivisionQuery(undefined);
+
+  const navigate = useNavigate();
+
 
   const form = useForm<TourFormData>({
     resolver: zodResolver(createTourZodObject),
@@ -52,11 +59,21 @@ export default function Add_Tour() {
   });
 
   const onSubmit: SubmitHandler<TourFormData> = async (data) => {
-    console.log("✅ Submitted Tour Data:", data);
+
     try {
       await addTour(data).unwrap();
+      navigate("/admin/all_tour")
+      toast.success("Tour added successfully.");
     } catch (err) {
-      console.error(err);
+      const error = err as IError;
+      console.error(error);
+      if (error.status === 500) {
+        form.setError("email", {
+          type: "manual",
+          message: "User is not verified.",
+        });
+        toast.error(error.data.message);
+      }
     }
   };
   return (
@@ -99,24 +116,36 @@ export default function Add_Tour() {
           />
 
           {/* Tour Type */}
+
           <FormField
             control={form.control}
             name="tourType"
             render={({ field }) => (
-              <div>
+              <FormItem className="flex-1 ">
                 <FormLabel>Tour Type</FormLabel>
-                <FormControl>
-                  <select {...field} className="w-full border rounded px-3 py-2 bg-accent">
-                    <option value="">Select Tour Type</option>
-                    {tourTypes?.map((type: any) => (
-                      <option key={type.id} value={type.id}>
-                        {type.name}
-                      </option>
-                    ))}
-                  </select>
-                </FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  disabled={tourTypeLoading}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {tourTypes?.map(
+                      (item: { name: string; _id: string }) => (
+                        <SelectItem key={item._id} value={item._id}>
+                          {item.name}
+                        </SelectItem>
+                      )
+                    )}
+                  </SelectContent>
+                </Select>
+
                 <FormMessage />
-              </div>
+              </FormItem>
             )}
           />
 
@@ -125,20 +154,31 @@ export default function Add_Tour() {
             control={form.control}
             name="division"
             render={({ field }) => (
-              <div>
+              <FormItem className="flex-1 ">
                 <FormLabel>Division</FormLabel>
-                <FormControl>
-                  <select {...field} className="w-full border rounded px-3 py-2 bg-accent">
-                    <option value="">Select Division</option>
-                    {divisions?.map((division: any) => (
-                      <option key={division.id} value={division.id}>
-                        {division.name}
-                      </option>
-                    ))}
-                  </select>
-                </FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  disabled={divisionLoading}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {divisions?.map(
+                      (item: { name: string; _id: string }) => (
+                        <SelectItem key={item._id} value={item._id}>
+                          {item.name}
+                        </SelectItem>
+                      )
+                    )}
+                  </SelectContent>
+                </Select>
+
                 <FormMessage />
-              </div>
+              </FormItem>
             )}
           />
 
@@ -309,6 +349,6 @@ export default function Add_Tour() {
           </div>
         </form>
       </Form>
-    </div>
+    </div >
   )
 }
