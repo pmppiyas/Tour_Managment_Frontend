@@ -12,6 +12,8 @@ import { userSidebarItems } from "@/router/userSidebarNav";
 import { checkAuth } from "@/middleware/checkAuth";
 import { Role } from "@/constants/role";
 import TourDetail from "@/components/modules/tour/TourDetail";
+import All_Tour from '@/page/shared/All_Tour';
+import HomePage from '@/page/shared/HomePage';
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +25,10 @@ export const router = createBrowserRouter([
         path: "*",
         Component: NotFound,
       },
+      {
+        index: true,
+        Component: HomePage,
+      },
       { path: "/auth/register", Component: Register },
       {
         path: "/auth/login",
@@ -33,7 +39,12 @@ export const router = createBrowserRouter([
         Component: Verify,
       },
       {
-        path: "/tour/details/:slug",
+        path: "tours",
+        Component: All_Tour,
+
+      },
+      {
+        path: "/tours/:slug",
         Component: TourDetail,
       },
     ],

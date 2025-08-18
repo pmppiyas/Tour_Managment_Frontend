@@ -29,12 +29,6 @@ export const adminSidebarItems: ISidebarItem[] = [
     title: "Tour Management",
     items: [
       {
-        title: "All Tour",
-        url: "all_tour",
-        component: All_Tour,
-        icon: IconTexture,
-      },
-      {
         title: "Add A Tour",
         url: "add_tour",
         component: Add_Tour,

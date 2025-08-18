@@ -23,14 +23,24 @@ export default function Navbar() {
   const { me: user } = useAuth();
   const userRole = user?.role;
 
-  const navigationLinks = [
+  type TLINK = {
+    href: string;
+    label: string;
+    roles: string[];
+    active?: boolean
+  }[]
+
+  const navigationLinks: TLINK = [
     { href: "/", label: "Home", active: true, roles: ["PUBLIC"] },
-    { href: "/features", label: "Features", roles: ["PUBLIC"] },
     {
       href: "/admin",
       label: "Dashboard",
       roles: [Role.SUPER_ADMIN, Role.ADMIN],
     },
+    { href: "/features", label: "Features", roles: ["PUBLIC"] },
+
+    { href: "/tours", label: "All Tours", roles: ["PUBLIC"] },
+
     { href: "/user", label: "Dashboard", roles: [Role.USER] },
     { href: "/pricing", label: "Pricing", roles: [Role.USER] },
     { href: "/about", label: "About", roles: ["PUBLIC"] },
