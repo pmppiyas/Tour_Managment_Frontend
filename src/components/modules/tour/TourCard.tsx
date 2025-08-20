@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
@@ -12,13 +13,20 @@ import TourDeleteModal from "@/components/modules/tour/TourDeleteModal";
 import TourUpdateModal from "@/components/modules/tour/TourUpdateModal";
 import { toast } from "sonner";
 import { Calendar, MapPin, Users, DollarSign, Info } from "lucide-react";
+import { useAuth } from '@/hooks/useAuth';
+import { Role } from '@/constants/role';
+import { cn } from '@/lib/utils';
 
 export default function TourCard({ tour }: { tour: any }) {
   const [selectedTour, setSelectedTour] = useState<any | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const { me: user } = useAuth()
 
+  const isAdmin = user?.role === Role.ADMIN || user?.role === Role.SUPER_ADMIN;
+
+  console.log(isAdmin)
   const navigate = useNavigate();
 
   const handleDelete = (id: string) => {
@@ -91,49 +99,62 @@ export default function TourCard({ tour }: { tour: any }) {
 
         {/* Footer Buttons */}
         <CardFooter className="flex justify-between items-center p-4 border-t">
-          <Button
+
+
+          {isAdmin &&
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => handleDelete(tour._id)}
+            >
+              Delete
+            </Button>}
+
+          {isAdmin && <Button size="sm" variant="outline" onClick={() => handleEdit(tour)}>
+            Edit
+          </Button>}
+
+          {!isAdmin && <Button
             size="sm"
-            variant="destructive"
-            onClick={() => handleDelete(tour._id)}
+            className={cn(!isAdmin && "w-full")}
+            onClick={() => handleDetail(tour.slug)}
           >
-            Delete
-          </Button>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => handleEdit(tour)}>
-              Edit
-            </Button>
-            <Button size="sm" onClick={() => handleDetail(tour.slug)}>
-              Detail
-            </Button>
-          </div>
+            Detail
+          </Button>}
+
+
         </CardFooter>
-      </Card>
+      </Card >
 
       {/* Update Modal */}
-      {modalOpen && selectedTour && (
-        <TourUpdateModal
-          tour={selectedTour}
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
-          onUpdate={() => {
-            setModalOpen(false);
-            toast.success("Tour updated successfully");
-          }}
-        />
-      )}
+      {
+        modalOpen && selectedTour && (
+          <TourUpdateModal
+            tour={selectedTour}
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            onUpdate={() => {
+              setModalOpen(false);
+              toast.success("Tour updated successfully");
+            }}
+          />
+        )
+      }
 
       {/* Delete Modal */}
-      {deleteModalOpen && deleteTargetId && (
-        <TourDeleteModal
-          tourId={deleteTargetId}
-          open={deleteModalOpen}
-          onClose={() => setDeleteModalOpen(false)}
-          onDeleteSuccess={() => {
-            setDeleteModalOpen(false);
-            toast.success("Tour deleted successfully");
-          }}
-        />
-      )}
+      {
+        deleteModalOpen && deleteTargetId && (
+          <TourDeleteModal
+            tourId={deleteTargetId}
+            open={deleteModalOpen}
+            onClose={() => setDeleteModalOpen(false)}
+            onDeleteSuccess={() => {
+              setDeleteModalOpen(false);
+              toast.success("Tour deleted successfully");
+            }}
+          />
+        )
+      }
     </>
   );
 }

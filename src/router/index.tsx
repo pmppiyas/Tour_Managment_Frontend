@@ -15,6 +15,7 @@ import TourDetail from "@/components/modules/tour/TourDetail";
 import All_Tour from '@/page/shared/All_Tour';
 import HomePage from '@/page/shared/HomePage';
 import Features from '@/page/shared/Features';
+import TourBooking from '@/components/modules/tour/TourBooking';
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
         path: "/tours/:slug",
         Component: TourDetail,
       },
+      {
+        path: "/tours/booking/:slug",
+        Component: TourBooking
+      }
     ],
   },
   {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SocialLoginButtons from "@/components/modules/auth/SocialBtn";
 import { z } from "zod";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -43,6 +43,7 @@ export default function Login() {
   const [login] = useLoginMutation();
   const [sendOtp] = useSendOtpMutation(undefined);
   const navigate = useNavigate();
+  const location = useLocation()
   const { refetch } = useMe();
   const onSubmit = async (data: TLoginValues) => {
     const userInfo = {
@@ -53,7 +54,8 @@ export default function Login() {
       await login(userInfo).unwrap();
       refetch();
       toast.success("Login successfull.");
-      navigate("/");
+
+      navigate(location?.state?.from || "/");
     } catch (err) {
       const error = err as IError;
 
